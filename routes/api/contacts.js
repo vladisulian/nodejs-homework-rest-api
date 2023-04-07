@@ -4,14 +4,16 @@ const router = express.Router();
 
 const contacts = require("../../models/contacts");
 
+require("colors");
+
 router.get("/", async (req, res, next) => {
   // the route will be '3000:/api/contacts[get-path]
   try {
     const data = await contacts.listContacts();
     res.send(data);
   } catch (error) {
-    console.error(error);
     res.status(500).send(error);
+    throw new Error(`${error.message}`.red);
   }
 });
 
@@ -25,18 +27,25 @@ router.get("/:contactId", async (req, res, next) => {
 
     res.send(data);
   } catch (error) {
-    console.error(error);
     res.status(500).send(error);
+    throw new Error(`${error.message}`.red);
   }
 });
 
 router.post("/", async (req, res, next) => {
+  if (!req.body.name || !req.body.email || !req.body.phone) {
+    res.status(400).json({ message: "Missing required fields." });
+    return;
+  }
+
   try {
-    const data = await contacts.addContact(req.body);
-    res.send(data);
+    const contact = await contacts.addContact(req.body);
+    res.status(201).json(contact);
+
     res.end("Contact added successfully!");
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).end("Error adding contact");
+    throw new Error(`${error.message}`.red);
   }
 });
 
@@ -50,6 +59,7 @@ router.delete("/:contactId", async (req, res, next) => {
     next();
   } catch (error) {
     res.status(500).send(error);
+    throw new Error(`${error.message}`.red);
   }
 });
 
@@ -58,6 +68,7 @@ router.put("/:contactId", async (req, res, next) => {
     res.json({ message: "template message" });
   } catch (error) {
     res.status(500).send(error);
+    throw new Error(`${error.message}`.red);
   }
 });
 
