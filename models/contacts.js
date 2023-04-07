@@ -40,7 +40,7 @@ const addContact = async (body) => {
   const contactsList = await listContacts();
 
   const newContact = {
-    id: nanoid(8),
+    id: nanoid(21),
     name,
     email,
     phone,
