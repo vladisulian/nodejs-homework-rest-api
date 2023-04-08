@@ -6,14 +6,14 @@ const contacts = require("../../models/contacts");
 
 require("colors");
 
-const isContactAlreadyExists = async (email, phone) => {
+async function isContactAlreadyExists(email, phone) {
   const contactsList = await contacts.listContacts();
   return Object.values(contactsList).some(
     (contact) =>
       [contact.email, contact.phone].includes(email) ||
       [contact.email, contact.phone].includes(phone)
   );
-};
+}
 
 router.get("/", async (req, res, next) => {
   // the route will be '3000:/api/contacts[get-path]
@@ -42,12 +42,13 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  if (!req.body.name || !req.body.email || !req.body.phone) {
-    res.status(400).json({ message: "Missing required fields." });
+  const { name, email, phone } = req.body;
+  if (!name || !email || !phone) {
+    res.status(400).json({ message: "Missing required name field" });
     return;
   }
 
-  if (await isContactAlreadyExists(req.body.email, req.body.phone)) {
+  if (await isContactAlreadyExists(email, phone)) {
     res
       .status(409)
       .json({ message: "Contact with this email or phone already exists." })
@@ -67,10 +68,16 @@ router.post("/", async (req, res, next) => {
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  try {
-    const id = req.params.contactId;
+  const id = req.params.contactId;
 
-    contacts.removeContact(id);
+  const contactToDelete = await contacts.getContactById(id);
+  if (contactToDelete === undefined) {
+    res.status(404).json({ message: "Not found" });
+    return;
+  }
+
+  try {
+    await contacts.removeContact(id);
 
     res.send("Contact is successfully removed!");
     next();
