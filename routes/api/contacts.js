@@ -23,12 +23,13 @@ async function isContactWithSameFields(res, email, phone) {
 }
 async function isContactExist(res, id) {
   const contact = await contacts.getContactById(id);
-  if (contact === undefined) {
+
+  if (!contact || contact === undefined) {
     res.status(404).json({ message: "Not found" }).end();
   }
   return contact;
 }
-function checkRequiredFields(res, name, email, phone) {
+function checkRequiredFields(res, name, email) {
   const missedFields = [];
 
   !name && missedFields.push("name");
@@ -70,11 +71,10 @@ router.get("/:contactId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const { name, email, phone } = req.body;
 
-  checkRequiredFields(res, name, email, phone);
-
-  isContactWithSameFields(res, email, phone);
-
   try {
+    checkRequiredFields(res, name, email, phone);
+    await isContactWithSameFields(res, email, phone);
+
     const contact = await contacts.addContact(req.body);
     res.status(201).json(contact);
 
@@ -86,11 +86,10 @@ router.post("/", async (req, res, next) => {
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  const id = req.params.contactId;
-
-  isContactExist(res, id);
-
   try {
+    const id = req.params.contactId;
+
+    await isContactExist(res, id);
     await contacts.removeContact(id);
 
     res.send("Contact is successfully removed!");
@@ -102,10 +101,20 @@ router.delete("/:contactId", async (req, res, next) => {
 });
 
 router.put("/:contactId", async (req, res, next) => {
+  const id = req.params.contactId;
+  const { name, email, phone } = req.body;
+  if (!name && !email && !phone) {
+    res.status(400).json({ message: "Missing fields" }).end();
+    return;
+  }
   try {
-    res.json({ message: "template message" });
+    await isContactExist(res, id);
+
+    const updatedContact = await contacts.updateContact(id, req.body);
+
+    res.status(200).json({ updatedContact });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(error.message);
     throw new Error(`${error.message}`.red);
   }
 });

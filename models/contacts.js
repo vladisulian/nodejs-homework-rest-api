@@ -70,7 +70,7 @@ const updateContact = async (contactId, body) => {
     JSON.stringify(updatedContactsList, null, 2)
   );
 
-  return updatedContactsList;
+  return await getContactById(contactId);
 };
 
 module.exports = {
