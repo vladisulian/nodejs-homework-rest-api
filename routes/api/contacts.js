@@ -6,7 +6,7 @@ const contacts = require("../../models/contacts");
 
 require("colors");
 
-async function isContactAlreadyExists(email, phone) {
+async function isContactFieldsAlreadyExist(email, phone) {
   const contactsList = await contacts.listContacts();
   return Object.values(contactsList).some(
     (contact) =>
@@ -14,11 +14,12 @@ async function isContactAlreadyExists(email, phone) {
       [contact.email, contact.phone].includes(phone)
   );
 }
-async function isContactToDeleteExisting(res, id) {
-  const contactToDelete = await contacts.getContactById(id);
-  if (contactToDelete === undefined) {
+async function isContactExist(res, id) {
+  const contact = await contacts.getContactById(id);
+  if (contact === undefined) {
     res.status(404).json({ message: "Not found" }).end();
   }
+  return contact;
 }
 
 router.get("/", async (req, res, next) => {
@@ -33,12 +34,10 @@ router.get("/", async (req, res, next) => {
 });
 
 router.get("/:contactId", async (req, res, next) => {
-  try {
-    const data = await contacts.getContactById(req.params.contactId);
+  const { contactId } = req.params;
 
-    if (data === undefined) {
-      res.status(404).end("Contact is not found");
-    }
+  try {
+    const data = await isContactExist(res, contactId);
 
     res.send(data);
   } catch (error) {
@@ -54,7 +53,7 @@ router.post("/", async (req, res, next) => {
     return;
   }
 
-  if (await isContactAlreadyExists(email, phone)) {
+  if (await isContactFieldsAlreadyExist(email, phone)) {
     res
       .status(409)
       .json({ message: "Contact with this email or phone already exists." })
@@ -76,7 +75,7 @@ router.post("/", async (req, res, next) => {
 router.delete("/:contactId", async (req, res, next) => {
   const id = req.params.contactId;
 
-  isContactToDeleteExisting(res, id);
+  isContactExist(res, id);
 
   try {
     await contacts.removeContact(id);
