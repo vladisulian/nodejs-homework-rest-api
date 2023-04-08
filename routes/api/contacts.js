@@ -14,6 +14,12 @@ async function isContactAlreadyExists(email, phone) {
       [contact.email, contact.phone].includes(phone)
   );
 }
+async function isContactToDeleteExisting(res, id) {
+  const contactToDelete = await contacts.getContactById(id);
+  if (contactToDelete === undefined) {
+    res.status(404).json({ message: "Not found" }).end();
+  }
+}
 
 router.get("/", async (req, res, next) => {
   // the route will be '3000:/api/contacts[get-path]
@@ -70,11 +76,7 @@ router.post("/", async (req, res, next) => {
 router.delete("/:contactId", async (req, res, next) => {
   const id = req.params.contactId;
 
-  const contactToDelete = await contacts.getContactById(id);
-  if (contactToDelete === undefined) {
-    res.status(404).json({ message: "Not found" });
-    return;
-  }
+  isContactToDeleteExisting(res, id);
 
   try {
     await contacts.removeContact(id);
