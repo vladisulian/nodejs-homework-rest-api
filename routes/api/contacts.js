@@ -6,13 +6,20 @@ const contacts = require("../../models/contacts");
 
 require("colors");
 
-async function isContactFieldsAlreadyExist(email, phone) {
+async function isContactWithSameFields(res, email, phone) {
   const contactsList = await contacts.listContacts();
-  return Object.values(contactsList).some(
+  const contact = Object.values(contactsList).some(
     (contact) =>
       [contact.email, contact.phone].includes(email) ||
       [contact.email, contact.phone].includes(phone)
   );
+
+  if (contact) {
+    res
+      .status(409)
+      .json({ message: "Contact with this email or phone already exists." })
+      .end();
+  }
 }
 async function isContactExist(res, id) {
   const contact = await contacts.getContactById(id);
@@ -20,6 +27,20 @@ async function isContactExist(res, id) {
     res.status(404).json({ message: "Not found" }).end();
   }
   return contact;
+}
+function checkRequiredFields(res, name, email, phone) {
+  const missedFields = [];
+
+  !name && missedFields.push("name");
+  !email && missedFields.push("email");
+  //*  !phone && missedFields.push("phone"); // maybe its not a required field
+
+  if (missedFields.length > 0) {
+    res
+      .status(400)
+      .json({ message: `Missing required fields: ${missedFields.join(", ")}` })
+      .end();
+  }
 }
 
 router.get("/", async (req, res, next) => {
@@ -48,18 +69,10 @@ router.get("/:contactId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   const { name, email, phone } = req.body;
-  if (!name || !email || !phone) {
-    res.status(400).json({ message: "Missing required name field" });
-    return;
-  }
 
-  if (await isContactFieldsAlreadyExist(email, phone)) {
-    res
-      .status(409)
-      .json({ message: "Contact with this email or phone already exists." })
-      .end();
-    return;
-  }
+  checkRequiredFields(res, name, email, phone);
+
+  isContactWithSameFields(res, email, phone);
 
   try {
     const contact = await contacts.addContact(req.body);
