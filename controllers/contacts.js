@@ -69,18 +69,17 @@ const deleteContact = async (req, res, next) => {
 };
 
 const updateContact = async (req, res, next) => {
-  const id = req.params.contactId;
-  const { error } = contactsSchema.validate(req.body);
-
-  if (error) {
-    res
-      .status(400)
-      .json({ message: `Missing fields: ${error.details[0].path[0]}` })
-      .end();
-    return;
-  }
-
   try {
+    const id = req.params.contactId;
+    const { error } = contactsSchema.validate(req.body);
+    if (error) {
+      res
+        .status(400)
+        .json({ message: `Missing fields: ${error.details[0].path[0]}` })
+        .end();
+      return;
+    }
+    
     await handleValid.isContactExist(res, id);
 
     const updatedContact = await contacts.updateContact(id, req.body);
