@@ -1,5 +1,5 @@
 const contacts = require("../models/contacts");
-const handleValidations = require("../controllers/handleValidations");
+const handleValid = require("../controllers/handleValidations");
 const { contactsSchema } = require("../Schemas/contacts");
 
 const getAll = async (req, res, next) => {
@@ -16,7 +16,7 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const data = await handleValidations.isContactExist(res, contactId);
+    const data = await handleValid.isContactExist(res, contactId);
 
     res.send(data);
   } catch (error) {
@@ -28,16 +28,24 @@ const getById = async (req, res, next) => {
 const addContact = async (req, res, next) => {
   try {
     const { error } = contactsSchema.validate(req.body);
-
     if (error) {
-      res.status(400).json({ message: error.details[0].message }).end();
+      res
+        .status(400)
+        .json({ message: `Missing fields: ${error.details[0].path[0]}` })
+        .end();
+      return;
+    }
+
+    const isAlreadyExist = await handleValid.isContactWithSameProps(req.body);
+    if (isAlreadyExist) {
+      res.status(400).json({ message: "Contact already exist" });
       return;
     }
 
     const contact = await contacts.addContact(req.body);
     res.status(201).json(contact);
   } catch (error) {
-    res.status(500).end("Error adding contact");
+    res.status(500).json({ message: "Error adding contact" });
     throw new Error(`${error.message}`.red);
   }
 };
@@ -45,7 +53,7 @@ const addContact = async (req, res, next) => {
 const deleteContact = async (req, res, next) => {
   try {
     const id = req.params.contactId;
-    const exist = await handleValidations.isContactExist(res, id);
+    const exist = await handleValid.isContactExist(res, id);
 
     if (!exist) {
       return;
@@ -73,7 +81,7 @@ const updateContact = async (req, res, next) => {
   }
 
   try {
-    await handleValidations.isContactExist(res, id);
+    await handleValid.isContactExist(res, id);
 
     const updatedContact = await contacts.updateContact(id, req.body);
 
