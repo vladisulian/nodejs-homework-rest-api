@@ -61,7 +61,7 @@ const deleteContact = async (req, res, next) => {
 
     await contacts.removeContact(id);
 
-    res.send("Contact is successfully removed!");
+    res.json({ message: "Contact deleted" }).status(200);
   } catch (error) {
     res.status(500).send(error);
     throw new Error(`${error.message}`.red);
@@ -79,7 +79,7 @@ const updateContact = async (req, res, next) => {
         .end();
       return;
     }
-    
+
     await handleValid.isContactExist(res, id);
 
     const updatedContact = await contacts.updateContact(id, req.body);
