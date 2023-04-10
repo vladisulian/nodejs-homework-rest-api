@@ -73,10 +73,7 @@ const updateContact = async (req, res, next) => {
     const id = req.params.contactId;
     const { error } = contactsSchema.validate(req.body);
     if (error) {
-      res
-        .status(400)
-        .json({ message: `Missing fields: ${error.details[0].path[0]}` })
-        .end();
+      res.status(400).json({ message: error.message }).end();
       return;
     }
 
