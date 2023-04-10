@@ -50,10 +50,7 @@ const addContact = async (body) => {
 
   await fs.writeFile(contactsPath, JSON.stringify(contactsList, null, 2));
 
-  return {
-    contact: newContact,
-    statusCode: 201,
-  };
+  return newContact;
 };
 
 const updateContact = async (contactId, body) => {
