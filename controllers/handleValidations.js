@@ -27,14 +27,13 @@ async function isContactExist(req, res, next) {
   next(); // вызываем следующий middleware или обработчик маршрута
 
   return contact;
-  // req.contact = contact; // сохраняем найденный контакт в объекте запроса
 }
 
 function isBodyEmpty(req, res, next) {
   const bodyIsEmpty = Object.keys(req.body).length === 0;
   if (bodyIsEmpty) {
     res.status(400).json({ message: "Missing fields" });
-    return;
+    return; 
   }
   next();
 }
