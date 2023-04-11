@@ -16,7 +16,7 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const data = await handleValid.isContactExist(res, contactId);
+    const data = await contacts.getContactById(contactId);
 
     res.send(data);
   } catch (error) {
@@ -36,12 +36,6 @@ const addContact = async (req, res, next) => {
       return;
     }
 
-    const isAlreadyExist = await handleValid.isContactWithSameProps(req.body);
-    if (isAlreadyExist) {
-      res.status(400).json({ message: "Contact already exist" });
-      return;
-    }
-
     const contact = await contacts.addContact(req.body);
     res.status(201).json(contact);
   } catch (error) {
@@ -53,11 +47,6 @@ const addContact = async (req, res, next) => {
 const deleteContact = async (req, res, next) => {
   try {
     const id = req.params.contactId;
-    const exist = await handleValid.isContactExist(res, id);
-
-    if (!exist) {
-      return;
-    }
 
     await contacts.removeContact(id);
 
@@ -71,6 +60,7 @@ const deleteContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   try {
     const id = req.params.contactId;
+
     const { error } = contactsSchema.validate(req.body);
     if (error) {
       res.status(400).json({ message: error.message }).end();
