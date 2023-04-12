@@ -1,25 +1,33 @@
-const express = require('express')
+const express = require("express");
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+const contacts = require("../../controllers/contacts");
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+const validation = require("../../controllers/handleValidations");
+const { joiValidate } = require("../../Schemas/contacts");
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+require("colors");
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/", contacts.getAll);
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/:contactId", validation.isContactExist, contacts.getById);
 
-module.exports = router
+router.post(
+  "/",
+  validation.isContactWithSameProps,
+  joiValidate,
+  contacts.addContact
+);
+
+router.delete("/:contactId", validation.isContactExist, contacts.deleteContact);
+
+router.put(
+  "/:contactId",
+  validation.isBodyEmpty,
+  validation.isContactExist,
+  joiValidate,
+  contacts.updateContact
+);
+
+module.exports = router;
