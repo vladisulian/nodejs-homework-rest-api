@@ -4,7 +4,6 @@ const router = express.Router();
 
 const contacts = require("../../controllers/contacts");
 
-
 require("colors");
 
 router.get("/", contacts.getAll);

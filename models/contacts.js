@@ -9,7 +9,11 @@ const Contact = mongoose.model("contacts", contactsSchema);
 const contactsPath = path.join(__dirname, "contacts.json");
 
 const listContacts = async () => {
-  return await Contact.find();
+  try {
+    return await Contact.find();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const getContactById = async (contactId) => {
@@ -51,20 +55,10 @@ const addContact = async (body) => {
 };
 
 const updateContact = async (contactId, body) => {
-  const contactsList = await listContacts();
-  const updatedContactsList = contactsList.map((contact) => {
-    if (contact.id === contactId) {
-      return { ...contact, ...body };
-    }
-    return contact;
-  });
-
-  await fs.writeFile(
-    contactsPath,
-    JSON.stringify(updatedContactsList, null, 2)
-  );
-
+  await Contact.findOneAndUpdate(contactId, body);
   return await getContactById(contactId);
+
+  //
 };
 
 module.exports = {

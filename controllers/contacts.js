@@ -6,8 +6,8 @@ const getAll = async (req, res, next) => {
     const data = await contacts.listContacts();
     res.send(data);
   } catch (error) {
-    res.status(500).send(error);
-    throw new Error(`${error.message}`.red);
+    res.status(500).send(error.message);
+    console.error(`${error.message}`.red);
   }
 };
 
@@ -18,8 +18,8 @@ const getById = async (req, res, next) => {
 
     res.send(data);
   } catch (error) {
-    res.status(500).send(error);
-    throw new Error(`${error.message}`.red);
+    res.status(500).send(error.message);
+    console.error(`${error.message}`.red);
   }
 };
 
@@ -54,7 +54,7 @@ const updateContact = async (req, res, next) => {
     res.status(200).json(updatedContact);
   } catch (error) {
     res.status(500).send(error.message);
-    throw new Error(`${error.message}`.red);
+    console.error(`${error.message}`.red);
   }
 };
 
