@@ -1,15 +1,25 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
+// const { contactsSchema } = require("./Schemas/contactsSchemaMongoose");
 
 const uri = process.env.DB_URI;
 
-mongoose
-  .connect(uri)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error(error);
+async function DB() {
+  try {
+    await mongoose.connect(uri);
+
+    console.log("Database connection successful!");
+  } catch (error) {
+    console.log(error);
     process.exit(1);
-  });
+  }
+}
+
+//   const Contact = mongoose.model("contacts", contactsSchema);
+
+//   const res = await Contact.find({ name: "Allen Raymond" });
+//   console.log(res);
+
+module.exports = {
+  DB,
+};

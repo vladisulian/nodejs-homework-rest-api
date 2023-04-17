@@ -1,14 +1,15 @@
+// const Contact = require("./mongoModels");
 const fs = require("fs/promises");
 const path = require("path");
-const { nanoid } = require("nanoid");
+
+const mongoose = require("mongoose");
+const { contactsSchema } = require("../Schemas/contactsSchemaMongoose");
+const Contact = mongoose.model("contacts", contactsSchema);
 
 const contactsPath = path.join(__dirname, "contacts.json");
 
 const listContacts = async () => {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const listContacts = JSON.parse(data);
-
-  return listContacts;
+  return await Contact.find();
 };
 
 const getContactById = async (contactId) => {
@@ -40,7 +41,7 @@ const addContact = async (body) => {
   const contactsList = await listContacts();
 
   const newContact = {
-    id: nanoid(21),
+    // id: nanoid(21),
     name,
     email,
     phone,
