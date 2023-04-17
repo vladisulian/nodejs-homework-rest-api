@@ -4,16 +4,23 @@ const router = express.Router();
 
 const contacts = require("../../controllers/contacts");
 
+const validation = require("../../controllers/handleValidations");
+
 require("colors");
 
 router.get("/", contacts.getAll);
 
-router.get("/:contactId", contacts.getById);
+router.get("/:contactId", validation.isContactExist, contacts.getById);
 
-router.post("/", contacts.addContact);
+router.post("/", validation.isContactWithSameProps, contacts.addContact);
 
-router.delete("/:contactId", contacts.deleteContact);
+router.delete("/:contactId", validation.isContactExist, contacts.deleteContact);
 
-router.put("/:contactId", contacts.updateContact);
+router.put(
+  "/:contactId",
+  validation.isBodyEmpty,
+  validation.isContactExist,
+  contacts.updateContact
+);
 
 module.exports = router;
