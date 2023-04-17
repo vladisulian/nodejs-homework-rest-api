@@ -1,18 +1,22 @@
 const contacts = require("../models/contacts");
+const { Contact } = require("../models/contacts");
 
 async function isContactWithSameProps(req, res, next) {
-  const { email, phone } = req.body;
-  const contactsList = await contacts.listContacts();
-  const contact = Object.values(contactsList).some(
-    (contact) =>
-      [contact.email, contact.phone].includes(email) ||
-      [contact.email, contact.phone].includes(phone)
-  );
+  const { name, email, phone } = req.body;
 
-  if (contact) {
-    res.status(400).json({ message: "Contact already exist" });
+  const existedContact = await Contact.findOne({ name, email, phone });
+
+  if (existedContact) {
+    res.status(400).json({ message: "Contact is already exist!" });
+    console.error(`Contact is already exist!`.red);
     return;
   }
+
+  // if (contact) {
+  //   res.status(400).json({ message: "Contact is already exist!" });
+  //   console.error(`Contact is already exist!`.red);
+  //   return;
+  // }
   next();
 }
 

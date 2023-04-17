@@ -12,7 +12,12 @@ router.get("/", contacts.getAll);
 
 router.get("/:contactId", validation.isContactExist, contacts.getById);
 
-router.post("/", validation.isContactWithSameProps, contacts.addContact);
+router.post(
+  "/",
+  validation.isBodyEmpty,
+  validation.isContactWithSameProps,
+  contacts.addContact
+);
 
 router.delete("/:contactId", validation.isContactExist, contacts.deleteContact);
 

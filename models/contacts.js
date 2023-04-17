@@ -43,4 +43,5 @@ module.exports = {
   addContact,
   updateContact,
   updateFavoriteStatus,
+  Contact,
 };
