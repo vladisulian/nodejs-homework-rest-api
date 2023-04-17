@@ -3,7 +3,7 @@ const fs = require("fs/promises");
 const path = require("path");
 
 const mongoose = require("mongoose");
-const { contactsSchema } = require("../Schemas/contactsSchemaMongoose");
+const { contactsSchema } = require("../Schemas/contactsSchema");
 const Contact = mongoose.model("contacts", contactsSchema);
 
 const contactsPath = path.join(__dirname, "contacts.json");
@@ -13,11 +13,7 @@ const listContacts = async () => {
 };
 
 const getContactById = async (contactId) => {
-  const contacts = await listContacts();
-
-  const contact = contacts.find((contact) => contact.id === contactId);
-
-  return contact;
+  return await Contact.findById(contactId);
 };
 
 const removeContact = async (contactId) => {
