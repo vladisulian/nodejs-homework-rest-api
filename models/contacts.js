@@ -29,8 +29,11 @@ const addContact = async (body) => {
 const updateContact = async (contactId, body) => {
   await Contact.findByIdAndUpdate(contactId, body);
   return await getContactById(contactId);
+};
 
-  //
+const updateFavoriteStatus = async (contactId, body) => {
+  await Contact.findByIdAndUpdate(contactId, body);
+  return await getContactById(contactId);
 };
 
 module.exports = {
@@ -39,4 +42,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateFavoriteStatus,
 };

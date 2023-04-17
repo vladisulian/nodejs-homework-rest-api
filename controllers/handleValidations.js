@@ -29,11 +29,21 @@ async function isContactExist(req, res, next) {
   return contact;
 }
 
+function isFavoriteInBody(req, res, next) {
+  const { favorite } = req.body;
+  if (!favorite) {
+    res.send({ message: "Missing field favorite" });
+    return;
+  }
+
+  next();
+}
+
 function isBodyEmpty(req, res, next) {
   const bodyIsEmpty = Object.keys(req.body).length === 0;
   if (bodyIsEmpty) {
     res.status(400).json({ message: "Missing fields" });
-    return; 
+    return;
   }
   next();
 }
@@ -42,4 +52,5 @@ module.exports = {
   isContactWithSameProps,
   isContactExist,
   isBodyEmpty,
+  isFavoriteInBody,
 };

@@ -58,10 +58,24 @@ const updateContact = async (req, res, next) => {
   }
 };
 
+const updateFavoriteStatus = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+
+    const contact = await contacts.updateFavoriteStatus(contactId, req.body);
+    console.log("contact", contact);
+    res.status(200).json(contact);
+  } catch (error) {
+    res.status(500).send(error.message);
+    console.error(`${error.message}`.red);
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   addContact,
   deleteContact,
   updateContact,
+  updateFavoriteStatus,
 };
