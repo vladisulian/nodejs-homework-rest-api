@@ -63,7 +63,6 @@ const updateFavoriteStatus = async (req, res, next) => {
     const { contactId } = req.params;
 
     const contact = await contacts.updateFavoriteStatus(contactId, req.body);
-    console.log("contact", contact);
     res.status(200).json(contact);
   } catch (error) {
     res.status(500).send(error.message);

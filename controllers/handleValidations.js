@@ -35,8 +35,9 @@ async function isContactExist(req, res, next) {
 
 function isFavoriteInBody(req, res, next) {
   const { favorite } = req.body;
-  if (!favorite) {
+  if (favorite === undefined) {
     res.send({ message: "Missing field favorite" });
+    console.error(`Missing field favorite. Favorite is ${favorite}`.red);
     return;
   }
 
