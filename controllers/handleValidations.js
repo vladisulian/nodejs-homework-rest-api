@@ -47,7 +47,7 @@ function isFavoriteInBody(req, res, next) {
 function isBodyEmpty(req, res, next) {
   const bodyIsEmpty = Object.keys(req.body).length === 0;
   if (bodyIsEmpty) {
-    res.status(400).json({ message: "Missing fields" });
+    res.status(400).json({ message: "Missing required name field" });
     return;
   }
   next();
