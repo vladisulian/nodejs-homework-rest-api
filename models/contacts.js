@@ -7,7 +7,11 @@ const listContacts = async () => {
 };
 
 const getContactById = async (contactId) => {
-  return await Contact.findById(contactId);
+  try {
+    return await Contact.findById(contactId);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const removeContact = async (contactId) => {
