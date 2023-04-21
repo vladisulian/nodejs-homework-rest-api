@@ -12,11 +12,6 @@ async function isContactWithSameProps(req, res, next) {
     return;
   }
 
-  // if (contact) {
-  //   res.status(400).json({ message: "Contact is already exist!" });
-  //   console.error(`Contact is already exist!`.red);
-  //   return;
-  // }
   next();
 }
 
@@ -37,7 +32,7 @@ function isFavoriteInBody(req, res, next) {
   const { favorite } = req.body;
   if (favorite === undefined) {
     res.status(400).json({ message: "Missing field favorite" });
-    console.error(`Missing field favorite. Favorite is ${favorite}gi`.red);
+    console.error(`Missing field favorite. Favorite is ${favorite}`.red);
     return;
   }
 
@@ -53,9 +48,21 @@ function isBodyEmpty(req, res, next) {
   next();
 }
 
+function isAllRequiredFieldsExist(req, res, next) {
+  const body = req.body;
+  const { name, email, phone } = body;
+
+  if (!name || !email || !phone) {
+    res.status(400).json({ message: "Missing required fields" });
+    return;
+  }
+  next();
+}
+
 module.exports = {
   isContactWithSameProps,
   isContactExist,
   isBodyEmpty,
   isFavoriteInBody,
+  isAllRequiredFieldsExist,
 };

@@ -14,7 +14,7 @@ router.get("/:contactId", validation.isContactExist, contacts.getById);
 
 router.post(
   "/",
-  validation.isBodyEmpty,
+  validation.isAllRequiredFieldsExist,
   validation.isContactWithSameProps,
   contacts.addContact
 );
