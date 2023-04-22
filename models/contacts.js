@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const { contactsSchema } = require("../Schemas/contactsSchema");
-const Contact = mongoose.model("contacts", contactsSchema);
+const { contacts } = require("../Schemas/contacts");
+const Contact = mongoose.model("contacts", contacts);
 
 const listContacts = async () => {
   return await Contact.find();
