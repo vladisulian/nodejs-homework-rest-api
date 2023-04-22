@@ -2,6 +2,7 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 
+const authRoutes = require("./routes/auth/auth");
 const contactsRouter = require("./routes/api/contacts.js");
 
 const app = express();
@@ -11,6 +12,8 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json()); // Body parser middleware
+
+app.use("/auth", authRoutes); // if request path including '/auth' then authRoutes will be connected
 
 app.use("/api/contacts", contactsRouter);
 app.use((req, res) => {

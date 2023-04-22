@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const users = new mongoose.Schema({
   password: {
     type: String,
@@ -18,6 +19,11 @@ const users = new mongoose.Schema({
     type: String,
     default: null,
   },
+
+  //   owner: {
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'user',
+  //   }
 });
 
 module.exports = { users };
