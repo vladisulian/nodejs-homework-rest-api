@@ -2,6 +2,8 @@ const User = require("../Schemas/user");
 const contacts = require("../models/contacts");
 const Contact = require("../Schemas/contacts");
 
+require("colors");
+
 async function isContactWithSameProps(req, res, next) {
   const { name, email, phone } = req.body;
 
@@ -61,7 +63,12 @@ function isAllRequiredFieldsExist(req, res, next) {
 }
 
 async function isUserExist(req, res, next) {
-  // User.
+  const user = await User.findOne({ email: req.body.email });
+  if (user !== null) {
+    return res.status(409).json({ error: "User is already exist" });
+    // console.error("User is already exist".red)
+  }
+  next();
 }
 
 module.exports = {
