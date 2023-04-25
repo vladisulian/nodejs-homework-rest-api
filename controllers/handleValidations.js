@@ -66,11 +66,20 @@ function isAllRequiredFieldsExist(req, res, next) {
   next();
 }
 
-async function isUserExist(req, res, next) {
+async function isUserExistOnRegister(req, res, next) {
   const user = await User.findOne({ email: req.body.email });
+
   if (user !== null) {
     return res.status(409).json({ error: "User is already exist" });
-    // console.error("User is already exist".red)
+  }
+  next();
+}
+
+async function isUserExistOnLogin(req, res, next) {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (user === null) {
+    return res.status(400).json({ error: "Invalid credentials" });
   }
   next();
 }
@@ -81,5 +90,6 @@ module.exports = {
   isBodyEmpty,
   isFavoriteInBody,
   isAllRequiredFieldsExist,
-  isUserExist,
+  isUserExistOnRegister,
+  isUserExistOnLogin,
 };
