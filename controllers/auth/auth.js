@@ -39,9 +39,7 @@ const login = (req, res, next) => {
     }
 
     res.json({ token: "TOKEN" });
-
-    console.log("The password is correct! ==>".yellow, result);
-    res.end();
+    // console.log("The password is correct! ==>".yellow, result);
   });
 };
 
