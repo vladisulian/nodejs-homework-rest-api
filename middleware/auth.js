@@ -30,7 +30,4 @@ async function isUserExistOnLogin(req, res, next) {
   next();
 }
 
-module.exports = {
-  isUserExistOnRegister,
-  isUserExistOnLogin,
-};
+module.exports = { isUserExistOnRegister, isUserExistOnLogin };
