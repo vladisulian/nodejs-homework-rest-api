@@ -103,6 +103,12 @@ async function comparePassword(req, res, next) {
   bcrypt.compare(password, userPassword, (err, result) => {
     if (err) return next(err);
 
+    if (result === false) {
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
+
+    res.json({ token: "TOKEN" });
+
     console.log("The password is correct! ==>".yellow, result);
     res.end();
   });
