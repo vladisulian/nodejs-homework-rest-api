@@ -30,4 +30,17 @@ async function isUserExistOnLogin(req, res, next) {
   next();
 }
 
-module.exports = { isUserExistOnRegister, isUserExistOnLogin };
+async function auth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ message: "No token provided." });
+    }
+    next();
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
+}
+
+module.exports = { auth, isUserExistOnRegister, isUserExistOnLogin };
