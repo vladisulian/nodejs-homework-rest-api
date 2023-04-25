@@ -11,7 +11,7 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
-app.use(express.json()); // Body parser middleware
+app.use(express.json()); //* Body parser middleware
 
 app.use("/auth", authRoutes); // if request path including '/auth' then authRoutes will be connected
 
