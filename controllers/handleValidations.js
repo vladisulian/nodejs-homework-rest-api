@@ -1,5 +1,4 @@
 const User = require("../Schemas/user");
-const contacts = require("../models/contacts");
 const Contact = require("../Schemas/contacts");
 
 require("colors");
@@ -19,16 +18,21 @@ async function isContactWithSameProps(req, res, next) {
 }
 
 async function isContactExist(req, res, next) {
-  const { contactId } = req.params;
-  const contact = await contacts.getContactById(contactId);
+  try {
+    const { contactId } = req.params;
+    const contact = await Contact.findById(contactId);
 
-  if (!contact || contact === undefined) {
-    return res.status(404).json({ message: "Not found" });
+    if (!contact || contact === undefined) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    next(); // вызываем следующий middleware или обработчик маршрута
+
+    return contact;
+  } catch (error) {
+    console.error(`${error.message}`.red);
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  next(); // вызываем следующий middleware или обработчик маршрута
-
-  return contact;
 }
 
 function isFavoriteInBody(req, res, next) {
