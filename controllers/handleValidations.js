@@ -86,7 +86,7 @@ async function isUserExistOnLogin(req, res, next) {
     const user = await User.findOne({ email: req.body.email });
 
     if (user === null) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Email or password is wrong." });
     }
 
     req.user = user; //* store user in the request body
@@ -104,7 +104,7 @@ async function comparePassword(req, res, next) {
     if (err) return next(err);
 
     if (result === false) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "Email or password is wrong." });
     }
 
     res.json({ token: "TOKEN" }); 
