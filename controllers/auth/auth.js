@@ -1,5 +1,6 @@
 const User = require("../../Schemas/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 require("colors");
 
@@ -38,7 +39,12 @@ const login = (req, res, next) => {
       return res.status(401).json({ error: "Email or password is wrong." });
     }
 
-    res.json({ token: "TOKEN" });
+    const token = jwt.sign(
+      { id: req.user._id, name: req.user.name }, // hashed id and name
+      process.env.JWT_SECRET, // secret password
+      { expiresIn: "1h" } // live-time of the token
+    );
+    res.json({ token });
     // console.log("The password is correct! ==>".yellow, result);
   });
 };

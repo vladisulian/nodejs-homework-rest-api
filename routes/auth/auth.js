@@ -4,7 +4,7 @@ const AuthControllers = require("../../controllers/auth/auth");
 const {
   isUserExistOnRegister,
   isUserExistOnLogin,
-} = require("../../controllers/handleValidations");
+} = require("../../middleware/auth");
 
 router.post("/register", isUserExistOnRegister, AuthControllers.register);
 

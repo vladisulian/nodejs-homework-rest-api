@@ -4,7 +4,7 @@ const router = express.Router();
 
 const contacts = require("../../controllers/contacts");
 
-const validation = require("../../controllers/handleValidations");
+const validation = require("../../middleware/contacts");
 
 const { joiValidate } = require("../../Schemas/contactsJoiSchema");
 
