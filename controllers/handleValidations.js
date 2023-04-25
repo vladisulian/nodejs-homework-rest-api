@@ -1,6 +1,8 @@
 const User = require("../Schemas/user");
 const Contact = require("../Schemas/contacts");
 
+const bcrypt = require("bcrypt");
+
 require("colors");
 
 async function isContactWithSameProps(req, res, next) {
@@ -67,21 +69,43 @@ function isAllRequiredFieldsExist(req, res, next) {
 }
 
 async function isUserExistOnRegister(req, res, next) {
-  const user = await User.findOne({ email: req.body.email });
+  try {
+    const user = await User.findOne({ email: req.body.email });
 
-  if (user !== null) {
-    return res.status(409).json({ error: "User is already exist" });
+    if (user !== null) {
+      return res.status(409).json({ error: "User is already exist" });
+    }
+    next();
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
   }
-  next();
 }
 
 async function isUserExistOnLogin(req, res, next) {
-  const user = await User.findOne({ email: req.body.email });
+  try {
+    const user = await User.findOne({ email: req.body.email });
 
-  if (user === null) {
-    return res.status(400).json({ error: "Invalid credentials" });
+    if (user === null) {
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
+
+    req.user = user; //* store user in the request body
+  } catch (error) {
+    console.error(`${error}`.red);
+    return res.status(500).json({ error: "Internal server error" });
   }
   next();
+}
+async function comparePassword(req, res, next) {
+  const password = req.body.password; //* take a password from the request body
+  const userPassword = req.user.password; //* take a password from the user, stored on the past middleware
+
+  bcrypt.compare(password, userPassword, (err, result) => {
+    if (err) return next(err);
+
+    console.log("The password is correct! ==>".yellow, result);
+    res.end();
+  });
 }
 
 module.exports = {
@@ -92,4 +116,5 @@ module.exports = {
   isAllRequiredFieldsExist,
   isUserExistOnRegister,
   isUserExistOnLogin,
+  comparePassword,
 };
