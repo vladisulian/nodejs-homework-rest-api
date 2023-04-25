@@ -3,30 +3,23 @@ const bcrypt = require("bcrypt");
 
 require("colors");
 
-const register = async (req, res, next) => {
+const register = (req, res, next) => {
   try {
-    const user = {
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-    };
+    const { name, email, password } = req.body;
 
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return next(err);
-      console.log(salt);
 
-      bcrypt.hash(user.password, salt, (err, hash) => {
+      bcrypt.hash(password, salt, (err, hash) => {
         if (err) return next(err);
 
-        console.log("hash", hash);
+        const user = { name, email, password: hash };
 
-        return res.end();
+        User.create(user);
+
+        return res.status(201).json(user);
       });
     });
-
-    await User.create(user);
-
-    return res.status(201).json(user);
   } catch (error) {
     console.error(`${error}`.red);
 
