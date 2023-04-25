@@ -20,6 +20,7 @@ const contacts = new mongoose.Schema(
   },
   { versionKey: false }
 );
-module.exports = {
-  contacts,
-};
+
+const Contact = mongoose.model("contacts", contacts);
+
+module.exports = Contact;

@@ -1,5 +1,6 @@
+const User = require("../Schemas/user");
 const contacts = require("../models/contacts");
-const { Contact } = require("../models/contacts");
+const Contact = require("../Schemas/contacts");
 
 async function isContactWithSameProps(req, res, next) {
   const { name, email, phone } = req.body;
@@ -59,10 +60,15 @@ function isAllRequiredFieldsExist(req, res, next) {
   next();
 }
 
+async function isUserExist(req, res, next) {
+  // User.
+}
+
 module.exports = {
   isContactWithSameProps,
   isContactExist,
   isBodyEmpty,
   isFavoriteInBody,
   isAllRequiredFieldsExist,
+  isUserExist,
 };
