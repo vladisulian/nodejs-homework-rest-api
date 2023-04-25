@@ -1,8 +1,6 @@
 const User = require("../Schemas/user");
 const Contact = require("../Schemas/contacts");
 
-const bcrypt = require("bcrypt");
-
 require("colors");
 
 async function isContactWithSameProps(req, res, next) {
@@ -96,23 +94,6 @@ async function isUserExistOnLogin(req, res, next) {
   }
   next();
 }
-async function comparePassword(req, res, next) {
-  const password = req.body.password; //* take a password from the request body
-  const userPassword = req.user.password; //* take a password from the user, stored on the past middleware
-
-  bcrypt.compare(password, userPassword, (err, result) => {
-    if (err) return next(err);
-
-    if (result === false) {
-      return res.status(401).json({ error: "Email or password is wrong." });
-    }
-
-    res.json({ token: "TOKEN" }); 
-
-    console.log("The password is correct! ==>".yellow, result);
-    res.end();
-  });
-}
 
 module.exports = {
   isContactWithSameProps,
@@ -122,5 +103,4 @@ module.exports = {
   isAllRequiredFieldsExist,
   isUserExistOnRegister,
   isUserExistOnLogin,
-  comparePassword,
 };
