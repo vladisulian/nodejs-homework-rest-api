@@ -47,13 +47,19 @@ async function auth(req, res, next) {
       return res.status(401).json({ message: "No token provided." });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         console.log("[AUTH]: Error with verifying token".yellow);
         return res.status(401).json({ message: "Invalid token" });
       }
-      req.user = decoded;
-      next();
+
+      const currentUser = await User.findById(decoded.id);
+
+      if (currentUser && currentUser.token === token) {
+        req.user = decoded;
+        return next();
+      }
+      return res.status(401).json({ message: "Not authorized" });
     });
   } catch (error) {
     console.error(`${error}`.red);
