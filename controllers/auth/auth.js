@@ -40,16 +40,13 @@ const login = (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { id: req.user._id, name: req.user.name }, // hashed id and name
+      { id: req.user._id }, // hashed id 
       process.env.JWT_SECRET, // secret password
-      { expiresIn: "1h" } // live-time of the token
+      { expiresIn: "1h" } // life-time of the token
     );
     res.json({ token });
     // console.log("The password is correct! ==>".yellow, result);
   });
 };
 
-module.exports = {
-  register,
-  login,
-};
+module.exports = { register, login };
