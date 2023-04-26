@@ -6,6 +6,7 @@ const authRoutes = require("./routes/auth/auth");
 const contactsRouter = require("./routes/api/contacts.js");
 
 const authMiddleware = require("./middleware/auth");
+const joiUser = require("./models/user-joi");
 
 const app = express();
 
@@ -15,7 +16,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json()); //* Body parser middleware
 
-app.use("/auth", authRoutes); // if request path including '/auth' then authRoutes will be connected
+app.use("/auth", joiUser, authRoutes); // if request path including '/auth' then authRoutes will be connected
 
 app.use("/api/contacts", authMiddleware.auth, contactsRouter);
 app.use((req, res) => {

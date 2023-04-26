@@ -12,8 +12,8 @@ function joiUser(req, res, next) {
   const { error } = userSchema.validate(req.body);
 
   if (error) {
-    console.error(`Joi Error: ${error.message}`.red);
-    res.status(400).json({ message: error }).end();
+    console.error(`Joi Error: ${error}`.red);
+    res.status(400).json({ message: error.message }).end();
     return;
   }
 
