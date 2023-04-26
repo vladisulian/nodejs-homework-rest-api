@@ -16,7 +16,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json()); //* Body parser middleware
 
-app.use("/auth", joiUser, authRoutes); // if request path including '/auth' then authRoutes will be connected
+app.use("/users", joiUser, authRoutes); // if request path including '/auth' then authRoutes will be connected
 
 app.use("/api/contacts", authMiddleware.auth, contactsRouter);
 app.use((req, res) => {
