@@ -36,20 +36,20 @@ async function auth(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      console.log("No authorization header".red);
+      console.log("[AUTH]: No authorization header".yellow);
       return res.status(401).json({ message: "No token provided." });
     }
 
     const [bearer, token] = authHeader.split(" ", 2);
 
     if (bearer !== "Bearer") {
-      console.log("No bearer".red);
+      console.log("[AUTH]: No bearer".yellow);
       return res.status(401).json({ message: "No token provided." });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        console.log("Error with verifying token".red);
+        console.log("[AUTH]: Error with verifying token".yellow);
         return res.status(401).json({ message: "Invalid token" });
       }
       req.user = decoded;
