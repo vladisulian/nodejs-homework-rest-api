@@ -1,4 +1,3 @@
-const contacts = require("../models/contacts");
 const Contact = require("../Schemas/contacts");
 
 require("colors");
@@ -17,7 +16,7 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const data = await contacts.getContactById(contactId);
+    const data = await Contact.findById(contactId);
 
     res.send(data);
   } catch (error) {
@@ -28,8 +27,13 @@ const getById = async (req, res, next) => {
 
 const addContact = async (req, res, next) => {
   try {
-    const contact = await contacts.addContact(req.body);
-    res.status(201).json(contact);
+    const { name, email, phone } = req.body;
+
+    const newContact = { name, email, phone };
+
+    const createdContact = await Contact.create(newContact);
+
+    return res.status(201).json(createdContact);
   } catch (error) {
     res.status(500).json({ message: "Error adding contact" });
     console.error(`Error ==> ${error.message}`.red);
@@ -38,9 +42,7 @@ const addContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   try {
-    const id = req.params.contactId;
-
-    await contacts.removeContact(id);
+    await Contact.findByIdAndDelete(req.params.contactId);
 
     res.json({ message: "Contact deleted" }).status(200);
   } catch (error) {
@@ -52,9 +54,9 @@ const deleteContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const updatedContact = await contacts.updateContact(contactId, req.body);
+    const updatedContact = await Contact.findByIdAndUpdate(contactId, req.body);
 
-    res.status(200).json(updatedContact);
+    return res.status(200).json(updatedContact);
   } catch (error) {
     res.status(500).send(error.message);
     console.error(`Error ==> ${error.message}`.red);
@@ -65,8 +67,11 @@ const updateFavoriteStatus = async (req, res, next) => {
   try {
     const { contactId } = req.params;
 
-    const contact = await contacts.updateFavoriteStatus(contactId, req.body);
-    res.status(200).json(contact);
+    await Contact.findByIdAndUpdate(contactId, req.body); //* updating a contact
+
+    const contact = await Contact.findById(contactId); // finding a contact to show him 
+
+    return res.status(200).json(contact);
   } catch (error) {
     res.status(500).send(error.message);
     console.error(`Error ==> ${error.message}`.red);
