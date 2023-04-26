@@ -1,8 +1,6 @@
 const Contact = require("../Schemas/contacts");
 
-const listContacts = async () => {
-  return await Contact.find();
-};
+
 
 const getContactById = async (contactId) => {
   try {
@@ -39,7 +37,6 @@ const updateFavoriteStatus = async (contactId, body) => {
 };
 
 module.exports = {
-  listContacts,
   getContactById,
   removeContact,
   addContact,

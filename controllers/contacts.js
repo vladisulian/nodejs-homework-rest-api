@@ -1,10 +1,12 @@
 const contacts = require("../models/contacts");
+const Contact = require("../Schemas/contacts");
+
 require("colors");
 
 const getAll = async (req, res, next) => {
   // the route will be '3000:/api/contacts[get-path]
   try {
-    const data = await contacts.listContacts();
+    const data = await Contact.find();
     res.send(data);
   } catch (error) {
     res.status(500).send(error.message);
