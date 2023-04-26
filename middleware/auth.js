@@ -1,4 +1,4 @@
-const User = require("../Schemas/user");
+const User = require("../models/user");
 require("colors");
 
 async function isUserExistOnRegister(req, res, next) {

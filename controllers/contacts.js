@@ -1,4 +1,4 @@
-const Contact = require("../Schemas/contacts");
+const Contact = require("../models/contacts");
 
 require("colors");
 
