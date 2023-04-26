@@ -7,7 +7,7 @@ async function isUserExistOnRegister(req, res, next) {
     const user = await User.findOne({ email: req.body.email });
 
     if (user !== null) {
-      return res.status(409).json({ error: "User is already exist" });
+      return res.status(409).json({ message: "Email in use" });
     }
     next();
   } catch (error) {
