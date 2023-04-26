@@ -18,14 +18,12 @@ const register = (req, res, next) => {
 
         User.create(user);
 
-        return res
-          .status(201)
-          .json({
-            user: {
-              email: user.email,
-              subscription: user.subscription || "starter",
-            },
-          });
+        return res.status(201).json({
+          user: {
+            email: user.email,
+            subscription: user.subscription || "starter",
+          },
+        });
       });
     });
   } catch (error) {
@@ -51,7 +49,15 @@ const login = (req, res, next) => {
       process.env.JWT_SECRET, // secret password
       { expiresIn: "1h" } // life-time of the token
     );
-    res.json({ token });
+    res
+      .status(200)
+      .json({
+        token,
+        user: {
+          email: req.user.email,
+          subscription: req.user.subscription || "starter",
+        },
+      });
     // console.log("The password is correct! ==>".yellow, result);
   });
 };
