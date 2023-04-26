@@ -6,7 +6,7 @@ require("colors");
 
 const register = (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return next(err);
@@ -14,11 +14,18 @@ const register = (req, res, next) => {
       bcrypt.hash(password, salt, (err, hash) => {
         if (err) return next(err);
 
-        const user = { name, email, password: hash };
+        const user = { email, password: hash };
 
         User.create(user);
 
-        return res.status(201).json(user);
+        return res
+          .status(201)
+          .json({
+            user: {
+              email: user.email,
+              subscription: user.subscription || "starter",
+            },
+          });
       });
     });
   } catch (error) {
@@ -40,7 +47,7 @@ const login = (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { id: req.user._id }, // hashed id 
+      { id: req.user._id }, // hashed id
       process.env.JWT_SECRET, // secret password
       { expiresIn: "1h" } // life-time of the token
     );
