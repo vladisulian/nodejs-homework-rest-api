@@ -13,7 +13,7 @@ function joiValidate(req, res, next) {
 
   const { error } = contactsSchema.validate(req.body);
   if (error) {
-    console.error(`Error: ${error.message}`.red);
+    console.error(`Joi error: ${error.message}`.red);
     res
       .status(400)
       .json({ message: `Missing fields: ${error.details[0].path[0]}` })
