@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 require("colors");
 
 async function isUserExistOnRegister(req, res, next) {
@@ -35,9 +36,25 @@ async function auth(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
+      console.log("No authorization header".red);
       return res.status(401).json({ message: "No token provided." });
     }
-    next();
+
+    const [bearer, token] = authHeader.split(" ", 2);
+
+    if (bearer !== "Bearer") {
+      console.log("No bearer".red);
+      return res.status(401).json({ message: "No token provided." });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        console.log("Error with verifying token".red);
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      req.user = decoded;
+      next();
+    });
   } catch (error) {
     console.error(`${error}`.red);
   }
