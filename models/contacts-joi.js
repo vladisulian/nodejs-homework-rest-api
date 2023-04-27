@@ -9,7 +9,7 @@ function joiValidate(req, res, next) {
       .pattern(/^\+?[0-9]{7,14}$/)
       .required(),
     favorite: Joi.boolean(),
-    userID: Joi.string(),
+    owner: Joi.string(),
   });
 
   const { error } = contactsSchema.validate(req.body);
