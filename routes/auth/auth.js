@@ -6,13 +6,15 @@ const {
   isUserExist,
   auth,
 } = require("../../middleware/auth");
+const { joiUser, joiSubscription } = require("../../models/user-joi");
 
-router.post("/register", alreadyRegistered, AuthControllers.register);
+router.post("/register", joiUser, alreadyRegistered, AuthControllers.register);
 
-router.post("/login", isUserExist, AuthControllers.login);
+router.post("/login", joiUser, isUserExist, AuthControllers.login);
 
-router.post("/logout", auth, AuthControllers.logout);
+router.post("/logout", joiUser);
+router.get("/current", joiUser, auth, AuthControllers.getCurrentUser);
 
-router.get("/current", auth, AuthControllers.getCurrentUser);
+router.patch("/", auth, joiSubscription, AuthControllers.updateSubscription);
 
 module.exports = router;
