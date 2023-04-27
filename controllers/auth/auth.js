@@ -83,4 +83,25 @@ const getCurrentUser = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, logout, getCurrentUser };
+const updateSubscription = async (req, res, next) => {
+  try {
+    const userID = req.user.id;
+
+    await User.findByIdAndUpdate(userID, req.body);
+
+    const updatedContact = await User.findById(userID);
+
+    res.send(updatedContact);
+  } catch (error) {
+    console.error(`${error}`.red);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+  getCurrentUser,
+  updateSubscription,
+};
