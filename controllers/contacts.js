@@ -7,14 +7,33 @@ const getAll = async (req, res, next) => {
   try {
     const owner = req.user.id;
 
-    console.log(req.query);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-    if (req.query.favorite === "true") {
-      return getByFavorite(req, res, next);
+    if (req.query.favorite === "true") return getByFavorite(req, res, next);
+
+    const data = await Contact.find({ owner }).limit(limit).skip(startIndex);
+
+    if (data.length === 0) res.status(204).json({ error: "No contacts" });
+
+    const results = { data, pagination: { page, limit } };
+
+    if (endIndex < (await Contact.countDocuments().exec())) {
+      results.pagination.next = {
+        page: page + 1,
+        limit: limit,
+      };
     }
 
-    const data = await Contact.find({ owner });
-    res.send(data);
+    if (startIndex > 0) {
+      results.pagination.prev = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+    res.json(results);
   } catch (error) {
     res.status(500).send(error.message);
     console.error(`Error ==> ${error.message}`.red);
