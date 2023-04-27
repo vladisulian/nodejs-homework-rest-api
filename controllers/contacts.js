@@ -5,7 +5,7 @@ require("colors");
 const getAll = async (req, res, next) => {
   // the route will be '3000:/api/contacts[get-path]
   try {
-    const userID = req.user.id;
+    const owner = req.user.id;
 
     console.log(req.query);
 
@@ -13,7 +13,7 @@ const getAll = async (req, res, next) => {
       return getByFavorite(req, res, next);
     }
 
-    const data = await Contact.find({ userID });
+    const data = await Contact.find({ owner });
     res.send(data);
   } catch (error) {
     res.status(500).send(error.message);
@@ -36,7 +36,7 @@ const getById = async (req, res, next) => {
 const getByFavorite = async (req, res, next) => {
   try {
     const favorites = await Contact.find({
-      userID: req.user.id,
+      owner: req.user.id,
       favorite: true,
     });
     return res.json(favorites);
@@ -50,7 +50,7 @@ const addContact = async (req, res, next) => {
   try {
     console.log("req.user.id ===> ", req.user.id);
     const contact = {
-      userID: req.user.id,
+      owner: req.user.id,
       name: req.body.name,
       email: req.body.email,
       phone: req.body.phone,
