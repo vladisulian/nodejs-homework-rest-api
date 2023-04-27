@@ -66,10 +66,9 @@ const login = (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    // console.log(req.user);
     await User.findByIdAndUpdate(req.user.id, { token: null }); // set the token
 
-    res.json({ message: "Logged out" });
+    res.status(204);
   } catch (error) {
     console.error(`${error}`.red);
   }
