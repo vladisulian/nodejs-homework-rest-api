@@ -16,7 +16,8 @@ const getAll = async (req, res, next) => {
 
     const data = await Contact.find({ owner }).limit(limit).skip(startIndex);
 
-    if (data.length === 0) res.status(204).json({ error: "No contacts" });
+    if (data.length === 0)
+      return res.status(412).json({ message: "No contacts" });
 
     const results = { data, pagination: { page, limit } };
 
