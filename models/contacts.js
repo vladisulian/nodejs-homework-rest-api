@@ -18,6 +18,9 @@ const contacts = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    userID: {
+      type: String,
+    },
   },
   { versionKey: false }
 );
