@@ -74,4 +74,13 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, logout };
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const userInfo = await User.findById(req.user.id);
+    res.json({ email: userInfo.email, subscription: userInfo.subscription });
+  } catch (error) {
+    console.log(`${error}`.red);
+  }
+};
+
+module.exports = { register, login, logout, getCurrentUser };
