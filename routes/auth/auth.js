@@ -2,12 +2,15 @@ const router = require("express").Router();
 
 const AuthControllers = require("../../controllers/auth/auth");
 const {
-  isUserExistOnRegister,
-  isUserExistOnLogin,
+  alreadyRegistered,
+  isUserExist,
+  auth,
 } = require("../../middleware/auth");
 
-router.post("/register", isUserExistOnRegister, AuthControllers.register);
+router.post("/register", alreadyRegistered, AuthControllers.register);
 
-router.post("/login", isUserExistOnLogin, AuthControllers.login);
+router.post("/login", isUserExist, AuthControllers.login);
+
+router.post("/logout", auth, AuthControllers.logout);
 
 module.exports = router;

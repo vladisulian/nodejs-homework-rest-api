@@ -2,7 +2,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 require("colors");
 
-async function isUserExistOnRegister(req, res, next) {
+async function alreadyRegistered(req, res, next) {
   try {
     const user = await User.findOne({ email: req.body.email });
 
@@ -15,7 +15,7 @@ async function isUserExistOnRegister(req, res, next) {
   }
 }
 
-async function isUserExistOnLogin(req, res, next) {
+async function isUserExist(req, res, next) {
   try {
     const user = await User.findOne({ email: req.body.email });
 
@@ -66,4 +66,4 @@ async function auth(req, res, next) {
   }
 }
 
-module.exports = { auth, isUserExistOnRegister, isUserExistOnLogin };
+module.exports = { auth, alreadyRegistered, isUserExist };

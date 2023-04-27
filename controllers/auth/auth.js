@@ -61,8 +61,18 @@ const login = (req, res, next) => {
         subscription: req.user.subscription || "starter",
       },
     });
-    // console.log("The password is correct! ==>".yellow, result);
   });
 };
 
-module.exports = { register, login };
+const logout = async (req, res, next) => {
+  try {
+    // console.log(req.user);
+    await User.findByIdAndUpdate(req.user.id, { token: null }); // set the token
+
+    res.json({ message: "Logged out" });
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
+};
+
+module.exports = { register, login, logout };
