@@ -12,7 +12,7 @@ router.post("/register", joiUser, alreadyRegistered, AuthControllers.register);
 
 router.post("/login", joiUser, isUserExist, AuthControllers.login);
 
-router.post("/logout", joiUser);
+router.post("/logout", joiUser, auth, AuthControllers.logout);
 router.get("/current", joiUser, auth, AuthControllers.getCurrentUser);
 
 router.patch("/", auth, joiSubscription, AuthControllers.updateSubscription);

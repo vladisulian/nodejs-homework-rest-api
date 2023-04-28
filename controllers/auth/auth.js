@@ -68,7 +68,7 @@ const logout = async (req, res, next) => {
   try {
     await User.findByIdAndUpdate(req.user.id, { token: null }); // set the token
 
-    res.status(204);
+    res.status(204).end();
   } catch (error) {
     console.error(`${error}`.red);
   }
