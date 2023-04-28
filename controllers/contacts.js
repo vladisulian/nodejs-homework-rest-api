@@ -7,10 +7,10 @@ const getAll = async (req, res, next) => {
   try {
     const owner = req.user.id;
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+    const page = parseInt(req.query.page) || 1; // current page (either "contacts?page=1" or "1" by default)
+    const limit = parseInt(req.query.limit) || 10; // maximum of contacts to show
+    const startIndex = (page - 1) * limit; // start contact index
+    const endIndex = page * limit; // end contact index
 
     if (req.query.favorite === "true") return getByFavorite(req, res, next);
 
