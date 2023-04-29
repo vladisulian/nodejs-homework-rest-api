@@ -1,6 +1,7 @@
 const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 require("colors");
 
@@ -14,7 +15,11 @@ const register = (req, res, next) => {
       bcrypt.hash(password, salt, (err, hash) => {
         if (err) return next(err);
 
-        const user = { email, password: hash };
+        const user = {
+          email,
+          password: hash,
+          avatarURL: gravatar.url(email, { s: "200", r: "pg", d: "mp" }), // avatar generated dynamically with gravatar, where d - default, r - rating
+        };
 
         User.create(user);
 
