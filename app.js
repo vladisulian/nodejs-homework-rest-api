@@ -21,6 +21,7 @@ app.use("/users", authRoutes); // if request path including '/auth' then authRou
 app.use("/avatars", express.static(path.join(__dirname, "public", "avatars"))); //* on '/avatars/filename.ext' display chosen avatar
 
 app.use("/api/contacts", authMiddleware.auth, contactsRouter);
+
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });

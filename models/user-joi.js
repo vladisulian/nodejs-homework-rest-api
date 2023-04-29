@@ -7,6 +7,7 @@ function joiUser(req, res, next) {
     password: Joi.string().min(3),
     token: Joi.string(),
     subscription: Joi.string(),
+    avatarURL: Joi.string(),
   });
 
   const { error } = userSchema.validate(req.body);
