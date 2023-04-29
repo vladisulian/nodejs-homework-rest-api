@@ -113,7 +113,7 @@ const updateAvatar = async (req, res, next) => {
     return res.status(200).json({ avatarURL: req.file.filename });
   } catch (error) {
     console.error(`${error}`.red);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(401).json({ error: "Not authorized" });
   }
 };
 
