@@ -99,7 +99,20 @@ const updateSubscription = async (req, res, next) => {
     res.send(updatedContact);
   } catch (error) {
     console.error(`${error}`.red);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updateAvatar = async (req, res, next) => {
+  try {
+    const userID = req.user.id;
+
+    await User.findByIdAndUpdate(userID, { avatarURL: req.file.filename });
+
+    return res.status(200).json({ avatarURL: req.file.filename });
+  } catch (error) {
+    console.error(`${error}`.red);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -109,4 +122,5 @@ module.exports = {
   logout,
   getCurrentUser,
   updateSubscription,
+  updateAvatar,
 };
