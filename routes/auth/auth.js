@@ -1,5 +1,24 @@
 const router = require("express").Router();
 
+const path = require("path");
+const crypto = require("crypto");
+
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: function (__, ___, cb) {
+    cb(null, path.join(__dirname, "..", "..", "public", "avatars"));
+  },
+  filename: function (__, file, cb) {
+    const uniqueSuffix = crypto.randomUUID();
+    const extention = path.extname(file.originalname); // .png
+    const basename = path.basename(file.originalname, extention);
+
+    cb(null, basename + "-" + uniqueSuffix + extention);
+  },
+});
+
+const upload = multer({ storage });
+
 const AuthControllers = require("../../controllers/auth/auth");
 const {
   alreadyRegistered,
@@ -18,6 +37,11 @@ router.get("/current", joiUser, auth, AuthControllers.getCurrentUser);
 
 router.patch("/", auth, joiSubscription, AuthControllers.updateSubscription);
 
-router.patch("/avatars", auth, AuthControllers.updateAvatar);
+router.patch(
+  "/avatars",
+  auth,
+  upload.single("avatar"),
+  AuthControllers.updateAvatar
+);
 
 module.exports = router;
