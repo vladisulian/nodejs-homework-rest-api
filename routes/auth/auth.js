@@ -4,16 +4,16 @@ const path = require("path");
 const crypto = require("crypto");
 
 const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: function (__, ___, cb) {
-    cb(null, path.join(__dirname, "..", "..", "public", "avatars"));
-  },
-  filename: function (__, file, cb) {
-    const uniqueSuffix = crypto.randomUUID();
-    const extention = path.extname(file.originalname); // .png
-    const basename = path.basename(file.originalname, extention);
 
-    cb(null, basename + "-" + uniqueSuffix + extention);
+const tmpDir = path.join(__dirname, "..", "..", "tmp");
+const storage = multer.diskStorage({
+  destination: (__, ___, cb) => cb(null, tmpDir), // ? cb arguments: errorHandler, avatars saving directory
+  filename: (__, file, cb) => {
+    const uniqueSuffix = crypto.randomUUID(); // ? create a unique hash
+    const extension = path.extname(file.originalname); // ? take an extension
+    const basename = path.basename(file.originalname, extension); // ? take a file basename
+
+    cb(null, basename + "-" + uniqueSuffix + extension); // ? cb - callback. Just write like this
   },
 });
 
