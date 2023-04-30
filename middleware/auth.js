@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const Jimp = require("jimp");
+const path = require("path");
 require("colors");
 
 async function alreadyRegistered(req, res, next) {
@@ -66,4 +68,25 @@ async function auth(req, res, next) {
   }
 }
 
-module.exports = { auth, alreadyRegistered, isUserExist };
+async function jimpSaving(req, res, next) {
+  const savingPath = path.join(
+    __dirname,
+    "..",
+    "public",
+    "avatars",
+    req.avatar.hashedName
+  );
+  
+  await Jimp.read(req.file.path)
+    .then((avatar) => {
+      return avatar.resize(200, 200).write(
+        savingPath,
+        () => {
+          next();
+        } // ? this anon func is needed because it's a callback slot
+      );
+    })
+    .catch((err) => console.error(`${err}`.red));
+}
+
+module.exports = { auth, alreadyRegistered, isUserExist, jimpSaving };
