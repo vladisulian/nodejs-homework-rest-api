@@ -10,6 +10,7 @@ const {
   alreadyRegistered,
   isUserExist,
   auth,
+  jimpSaving,
 } = require("../../middleware/auth");
 const { joiUser, joiSubscription } = require("../../models/user-joi");
 
@@ -56,6 +57,7 @@ router.patch(
   "/avatars",
   auth,
   upload.single("avatar"),
+  jimpSaving,
   AuthControllers.updateAvatar
 );
 
