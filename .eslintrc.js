@@ -3,7 +3,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
     node: true,
-    "jest/globals": true, // added for test working
+    "jest/globals": true, //! added for test working
   },
   extends: ["standard", "prettier"],
   parserOptions: {
