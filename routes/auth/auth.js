@@ -7,13 +7,15 @@ const multer = require("multer");
 
 const tmpDir = path.join(__dirname, "..", "..", "tmp");
 const storage = multer.diskStorage({
-  destination: (__, ___, cb) => cb(null, tmpDir), // ? cb arguments: errorHandler, avatars saving directory
-  filename: (__, file, cb) => {
-    const uniqueSuffix = crypto.randomUUID(); // ? create a unique hash
-    const extension = path.extname(file.originalname); // ? take an extension
-    const basename = path.basename(file.originalname, extension); // ? take a file basename
+  destination: tmpDir, // ? avatars saving directory
+  filename: (req, file, cb) => {
+    const hash = crypto.randomUUID(); // ? create an unique hash
+    const ext = path.extname(file.originalname); // ? take an extension
+    const basename = path.basename(file.originalname, ext); // ? take a file basename
 
-    cb(null, basename + "-" + uniqueSuffix + extension); // ? cb - callback. Just write like this
+    const hashedName = basename + "-" + hash + ext;
+    req.avatar = { hashedName }; // ? saving hashedName to req.avatar to use it on updateAvatar controller
+    cb(null, hashedName); // ? cb - callback. Just write like this
   },
 });
 
