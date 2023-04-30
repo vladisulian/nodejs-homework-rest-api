@@ -76,15 +76,13 @@ async function jimpSaving(req, res, next) {
     "avatars",
     req.avatar.hashedName
   );
-  
+
   await Jimp.read(req.file.path)
     .then((avatar) => {
-      return avatar.resize(200, 200).write(
-        savingPath,
-        () => {
-          next();
-        } // ? this anon func is needed because it's a callback slot
-      );
+      return avatar.resize(200, 200).write(savingPath, () => {
+        // ? this anon func is needed because it's a callback slot
+        next();
+      });
     })
     .catch((err) => console.error(`${err}`.red));
 }
