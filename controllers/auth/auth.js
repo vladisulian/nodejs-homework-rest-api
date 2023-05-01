@@ -113,24 +113,6 @@ const updateAvatar = async (req, res, next) => {
   try {
     const userID = req.user.id;
 
-    // const savingPath = path.join(
-    //   __dirname,
-    //   "..",
-    //   "..",
-    //   "public",
-    //   "avatars",
-    //   req.avatar.hashedName
-    // );
-
-    // Jimp.read(req.file.path)
-    //   .then((avatar) => {
-    //     return avatar.resize(200, 200).write(
-    //       savingPath,
-    //       () => console.log(`Successfully uploaded to ${savingPath}`.yellow) // ? this anon func is needed because it's a callback slot
-    //     );
-    //   })
-    //   .catch((err) => console.error(`${err}`.red));
-
     await User.findByIdAndUpdate(userID, { avatarURL: req.file.filename });
 
     return res.status(200).json({ avatarURL: req.file.filename });
