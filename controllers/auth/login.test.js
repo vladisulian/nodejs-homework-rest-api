@@ -40,6 +40,7 @@ describe("login", () => {
     expect(res).toHaveProperty("token");
     expect(typeof res.token).toBe("string");
   });
+
   test(`In response should be user(object) with 2 fields: email, subscription with STRING data-type.`, async () => {
     expect(res).toHaveProperty("user");
     expect(typeof res.user).toBe("object");
