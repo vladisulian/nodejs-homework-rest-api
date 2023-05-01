@@ -19,24 +19,21 @@ describe("login", () => {
   };
   const next = jest.fn();
 
-  jest.spyOn(User, "findByIdAndUpdate").mockResolvedValueOnce();
+  jest.spyOn(User, "findByIdAndUpdate").mockResolvedValueOnce(); // add spy to method in User model
 
-  const jwtSpy = jest.spyOn(jwt, "sign").mockReturnValueOnce("token");
+  const jwtSpy = jest.spyOn(jwt, "sign").mockReturnValueOnce("token"); // add spy to function in jwt
 
   const bcryptCompareSpy = jest
-    .spyOn(bcrypt, "compare")
+    .spyOn(bcrypt, "compare") // add spy to compare function in bcrypt
     .mockImplementationOnce((password, userPassword, callback) => {
+      // add fake args to function
       callback(null, true);
     });
 
-  login(req, res, next);
+  login(req, res, next); // use function
 
   test("res.status === 200", () => {
     expect(res.status).toHaveBeenCalledWith(200);
-
-    jwtSpy.mockRestore();
-    bcryptCompareSpy.mockRestore();
-    User.findByIdAndUpdate.mockRestore();
   });
 
   test("In response should be token ", async () => {
@@ -52,5 +49,9 @@ describe("login", () => {
 
     expect(res.user).toHaveProperty("subscription");
     expect(typeof res.user.subscription).toBe("string");
+
+    jwtSpy.mockRestore();
+    bcryptCompareSpy.mockRestore();
+    User.findByIdAndUpdate.mockRestore();
   });
 });
