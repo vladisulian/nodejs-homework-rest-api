@@ -36,12 +36,12 @@ describe("login", () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-  test("In response should be token ", async () => {
+  test("In response should be token ", () => {
     expect(res).toHaveProperty("token");
     expect(typeof res.token).toBe("string");
   });
 
-  test(`In response should be user(object) with 2 fields: email, subscription with STRING data-type.`, async () => {
+  test(`In response should be user(object) with 2 fields: email, subscription with STRING data-type.`, () => {
     expect(res).toHaveProperty("user");
     expect(typeof res.user).toBe("object");
 
