@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const Jimp = require("jimp");
+const fs = require("fs");
 const path = require("path");
 require("colors");
 
@@ -87,4 +88,24 @@ async function jimpSaving(req, res, next) {
     .catch((err) => console.error(`${err}`.red));
 }
 
-module.exports = { auth, alreadyRegistered, isUserExist, jimpSaving };
+const deleteTmpAvatar = (req, res, next) => {
+  const file = req.avatar.hashedName;
+  const filePath = path.join(__dirname, "..", "tmp", file);
+
+  fs.unlink(filePath, (err, stat) => {
+    if (err) {
+      console.error(`${err}`.red);
+      return;
+    }
+  });
+  console.log(`File ${file} if successfully removed.`.green);
+  next();
+};
+
+module.exports = {
+  auth,
+  alreadyRegistered,
+  isUserExist,
+  jimpSaving,
+  deleteTmpAvatar,
+};

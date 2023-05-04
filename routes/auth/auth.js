@@ -11,6 +11,7 @@ const {
   isUserExist,
   auth,
   jimpSaving,
+  deleteTmpAvatar,
 } = require("../../middleware/auth");
 const { joiUser, joiSubscription } = require("../../models/user-joi");
 
@@ -58,6 +59,7 @@ router.patch(
   auth,
   upload.single("avatar"),
   jimpSaving,
+  deleteTmpAvatar,
   AuthControllers.updateAvatar
 );
 
