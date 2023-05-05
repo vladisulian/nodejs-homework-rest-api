@@ -112,10 +112,11 @@ const updateSubscription = async (req, res, next) => {
 const updateAvatar = async (req, res, next) => {
   try {
     const userID = req.user.id;
+    const avatarURL = "avatars/" + req.file.filename;
 
-    await User.findByIdAndUpdate(userID, { avatarURL: req.file.filename });
+    await User.findByIdAndUpdate(userID, { avatarURL });
 
-    return res.status(200).json({ avatarURL: req.file.filename });
+    return res.status(200).json({ avatarURL });
   } catch (error) {
     console.error(`${error}`.red);
     return res.status(401).json({ error: "Not authorized" });
