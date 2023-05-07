@@ -23,7 +23,7 @@ const sendEmail = (emailTO, verificationToken) => {
     };
 
     transporter.sendMail(mailOptions);
-    console.log(`Email successfully sent!`.yellow);
+    console.log(`Verification email successfully sent!`.yellow);
   } catch (error) {
     console.error(`Oups, something went wrong :(`.red);
     console.error(`${error.message}`.red);
