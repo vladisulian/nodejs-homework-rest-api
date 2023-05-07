@@ -44,6 +44,19 @@ const register = (req, res, next) => {
   }
 };
 
+const sendAdditionalVerificationMail = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const verificationToken = req.user.verificationToken;
+
+    await sendEmail(email, verificationToken);
+
+    res.status(200).json({ message: "Verification email sent" });
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
+};
+
 const login = (req, res, next) => {
   try {
     const password = req.body.password; //* take a password from the request body
@@ -149,6 +162,7 @@ const verify = async (req, res, next) => {
 
 module.exports = {
   register,
+  sendAdditionalVerificationMail,
   login,
   logout,
   getCurrentUser,
