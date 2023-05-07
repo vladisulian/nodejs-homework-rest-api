@@ -9,6 +9,7 @@ const AuthControllers = require("../../controllers/auth/auth");
 const {
   alreadyRegistered,
   isUserExist,
+  verifyUserExist,
   auth,
   jimpSaving,
   deleteTmpAvatar,
@@ -63,6 +64,10 @@ router.patch(
   AuthControllers.updateAvatar
 );
 
-router.get("/veryfy/:verificationToken", AuthControllers.verify);
+router.get(
+  "/veryfy/:verificationToken",
+  verifyUserExist,
+  AuthControllers.verify
+);
 
 module.exports = router;
