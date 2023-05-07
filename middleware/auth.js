@@ -35,6 +35,26 @@ async function verifyUserExist(req, res, next) {
   }
 }
 
+async function verificationStatusCheckByEmail(req, res, next) {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    const isVerify = user.verify;
+    const verificationToken = user.verificationToken;
+
+    if (isVerify) {
+      return res
+        .status(401)
+        .json({ message: "Verification has already been passed" });
+    }
+
+    req.user = { id: user._id, verificationToken }; // ? write user id to request for parsing in verify controller
+
+    next();
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
+}
+
 async function isUserExist(req, res, next) {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -127,6 +147,7 @@ module.exports = {
   alreadyRegistered,
   isUserExist,
   verifyUserExist,
+  verificationStatusCheckByEmail,
   jimpSaving,
   deleteTmpAvatar,
 };
