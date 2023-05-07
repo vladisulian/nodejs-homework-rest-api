@@ -92,7 +92,8 @@ const deleteTmpAvatar = (req, res, next) => {
   // "file" is going from multer package in routes/auth
   const file = req.avatar.hashedName;
 
-  const filePath = path.join(__dirname, "..", "tmp", file);
+  const dirPath = path.join(__dirname, "..", "tmp");
+  const filePath = path.join(dirPath, file);
 
   fs.unlink(filePath, (err, stat) => {
     if (err) {
@@ -100,7 +101,7 @@ const deleteTmpAvatar = (req, res, next) => {
       return;
     }
   });
-  console.log(`File ${file} if successfully removed.`.green);
+  console.log(`File ${file} from ${dirPath} is successfully removed.`.yellow);
   next();
 };
 
