@@ -65,7 +65,7 @@ router.patch(
 );
 
 router.get(
-  "/veryfy/:verificationToken",
+  "/verify/:verificationToken",
   verifyUserExist,
   AuthControllers.verify
 );
