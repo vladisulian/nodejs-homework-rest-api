@@ -48,7 +48,11 @@ const login = (req, res, next) => {
   try {
     const password = req.body.password; //* take a password from the request body
     const userPassword = req.user.password; //* take a password from the user, stored on the past middleware
+    const userVerify = req.user.verify; //* take an verify status fro mthe user
 
+    if (userVerify === false) {
+      req.status(400).json({ message: "Not verified." });
+    }
     bcrypt.compare(password, userPassword, async (err, result) => {
       if (err) return next(err);
 
