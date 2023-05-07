@@ -21,11 +21,13 @@ async function alreadyRegistered(req, res, next) {
 async function verifyUserExist(req, res, next) {
   try {
     const { verificationToken } = req.params;
-    const user = await User.findOne(verificationToken);
+    const user = await User.findOne({ verificationToken: verificationToken });
 
     if (!user) {
       res.status(404).json({ message: "Not found" });
     }
+
+    req.user = { id: user._id }; // ? write user id to request for parsing in verify controller
 
     next();
   } catch (error) {
