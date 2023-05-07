@@ -24,7 +24,7 @@ async function verifyUserExist(req, res, next) {
     const user = await User.findOne({ verificationToken: verificationToken });
 
     if (!user) {
-      res.status(404).json({ message: "Not found" });
+      res.status(404).json({ message: "User not found" });
     }
 
     req.user = { id: user._id }; // ? write user id to request for parsing in verify controller
