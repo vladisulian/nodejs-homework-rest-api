@@ -1,5 +1,5 @@
 const User = require("../../models/user");
-
+const sendEmail = require("../../helpers/mailer");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
@@ -24,6 +24,8 @@ const register = (req, res, next) => {
           verificationToken: crypto.randomUUID(),
           avatarURL: gravatar.url(email, { s: "200", r: "pg", d: "mp" }), // avatar generated dynamically with gravatar, where d - default, r - rating
         };
+
+        sendEmail(email, user.verificationToken);
 
         User.create(user);
 
@@ -127,8 +129,13 @@ const updateAvatar = async (req, res, next) => {
 
 const verify = async (req, res, next) => {
   try {
+    const { token } = req.params;
     const userID = req.user.id;
-    await User.findByIdAndUpdate(userID, { verificationToken: true });
+
+    await User.findByIdAndUpdate(userID, {
+      verificationToken: null,
+      verify: true,
+    });
 
     return res.status(200).json({ message: "Verification successful" });
   } catch (error) {
