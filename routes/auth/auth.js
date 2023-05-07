@@ -15,7 +15,7 @@ const {
 } = require("../../middleware/auth");
 const { joiUser, joiSubscription } = require("../../models/user-joi");
 
-const multer = require("multer"); 
+const multer = require("multer");
 
 const tmpDir = async (req, file, cb) => {
   const directory = path.join(__dirname, "..", "..", "tmp");
@@ -62,5 +62,7 @@ router.patch(
   deleteTmpAvatar,
   AuthControllers.updateAvatar
 );
+
+router.get("/veryfy/:verificationToken", AuthControllers.verify);
 
 module.exports = router;
