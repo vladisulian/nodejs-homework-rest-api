@@ -47,7 +47,7 @@ const register = (req, res, next) => {
 const sendAdditionalVerificationMail = async (req, res, next) => {
   try {
     const email = req.body.email;
-    const verificationToken = req.user.verificationToken;
+    const verificationToken = req.user.verificationToken; // bring from verificationStatusCheckByEmail in auth middleware
 
     await sendEmail(email, verificationToken);
 
