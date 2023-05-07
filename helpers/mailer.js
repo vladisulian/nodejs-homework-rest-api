@@ -12,15 +12,14 @@ const smtpConfig = {
   },
 };
 
-const sendEmail = (emailTO) => {
+const sendEmail = (emailTO, verificationToken) => {
   try {
     const transporter = nodemailer.createTransport(smtpConfig);
-
     const mailOptions = {
       from: process.env.SENDEREMAIL,
       to: emailTO,
-      subject: "dasdasasd",
-      text: "adsad",
+      subject: "Verify your email",
+      html: `<a href="http://localhost:3000/users/verify/${verificationToken}">Confirm your Email</a>`,
     };
 
     transporter.sendMail(mailOptions);
