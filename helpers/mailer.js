@@ -18,7 +18,7 @@ const sendEmail = (emailTO) => {
 
     const mailOptions = {
       from: process.env.SENDEREMAIL,
-      to: "vladis.ulian@gmail.com",
+      to: emailTO,
       subject: "dasdasasd",
       text: "adsad",
     };
@@ -30,5 +30,4 @@ const sendEmail = (emailTO) => {
     console.error(`${error.message}`.red);
   }
 };
-sendEmail();
 module.exports = sendEmail;
