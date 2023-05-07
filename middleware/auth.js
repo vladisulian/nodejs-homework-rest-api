@@ -18,6 +18,21 @@ async function alreadyRegistered(req, res, next) {
   }
 }
 
+async function verifyUserExist(req, res, next) {
+  try {
+    const { verificationToken } = req.params;
+    const user = await User.findOne(verificationToken);
+
+    if (!user) {
+      res.status(404).json({ message: "Not found" });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function isUserExist(req, res, next) {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -109,6 +124,7 @@ module.exports = {
   auth,
   alreadyRegistered,
   isUserExist,
+  verifyUserExist,
   jimpSaving,
   deleteTmpAvatar,
 };
