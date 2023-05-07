@@ -89,7 +89,9 @@ async function jimpSaving(req, res, next) {
 }
 
 const deleteTmpAvatar = (req, res, next) => {
+  // "file" is going from multer package in routes/auth
   const file = req.avatar.hashedName;
+
   const filePath = path.join(__dirname, "..", "tmp", file);
 
   fs.unlink(filePath, (err, stat) => {
