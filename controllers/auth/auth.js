@@ -3,8 +3,6 @@ const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
-// const Jimp = require("jimp");
-// const path = require("path");
 require("colors");
 
 const register = (req, res, next) => {
