@@ -15,7 +15,7 @@ const {
 } = require("../../middleware/auth");
 const { joiUser, joiSubscription } = require("../../models/user-joi");
 
-const multer = require("multer"); 
+const multer = require("multer");
 
 const tmpDir = async (req, file, cb) => {
   const directory = path.join(__dirname, "..", "..", "tmp");
@@ -24,7 +24,7 @@ const tmpDir = async (req, file, cb) => {
   //* cb - callback. The second argument - returning value
   if (!directoryExist) {
     await mkdir(directory);
-    cb(null, directory);
+    return cb(null, directory);
   }
 
   cb(null, directory);
