@@ -1,7 +1,8 @@
 const User = require("../../models/user");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const gravatar = require("gravatar");
 require("colors");
 
 const register = (req, res, next) => {
@@ -14,7 +15,11 @@ const register = (req, res, next) => {
       bcrypt.hash(password, salt, (err, hash) => {
         if (err) return next(err);
 
-        const user = { email, password: hash };
+        const user = {
+          email,
+          password: hash,
+          avatarURL: gravatar.url(email, { s: "200", r: "pg", d: "mp" }), // avatar generated dynamically with gravatar, where d - default, r - rating
+        };
 
         User.create(user);
 
@@ -34,34 +39,38 @@ const register = (req, res, next) => {
 };
 
 const login = (req, res, next) => {
-  const password = req.body.password; //* take a password from the request body
-  const userPassword = req.user.password; //* take a password from the user, stored on the past middleware
+  try {
+    const password = req.body.password; //* take a password from the request body
+    const userPassword = req.user.password; //* take a password from the user, stored on the past middleware
 
-  bcrypt.compare(password, userPassword, async (err, result) => {
-    if (err) return next(err);
+    bcrypt.compare(password, userPassword, async (err, result) => {
+      if (err) return next(err);
 
-    if (result === false) {
-      return res.status(401).json({ error: "Email or password is wrong." });
-    }
+      if (result === false) {
+        return res.status(401).json({ error: "Email or password is wrong." });
+      }
 
-    const token = jwt.sign(
-      { id: req.user._id }, // hashed id
-      process.env.JWT_SECRET, // secret password
-      { expiresIn: "1h" } // life-time of the token
-    );
+      const token = jwt.sign(
+        { id: req.user._id }, // hashed id
+        process.env.JWT_SECRET, // secret password
+        { expiresIn: "12h" } // life-time of the token
+      );
 
-    req.user.token = token;
+      req.user.token = token;
 
-    await User.findByIdAndUpdate(req.user.id, req.user); // set the token
+      await User.findByIdAndUpdate(req.user.id, req.user); // set the token
 
-    res.status(200).json({
-      token: req.user.token,
-      user: {
-        email: req.user.email,
-        subscription: req.user.subscription || "starter",
-      },
+      res.status(200).json({
+        token: req.user.token,
+        user: {
+          email: req.user.email,
+          subscription: req.user.subscription || "starter",
+        },
+      });
     });
-  });
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
 };
 
 const logout = async (req, res, next) => {
@@ -94,7 +103,21 @@ const updateSubscription = async (req, res, next) => {
     res.send(updatedContact);
   } catch (error) {
     console.error(`${error}`.red);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updateAvatar = async (req, res, next) => {
+  try {
+    const userID = req.user.id;
+    const avatarURL = "avatars/" + req.file.filename;
+
+    await User.findByIdAndUpdate(userID, { avatarURL });
+
+    return res.status(200).json({ avatarURL });
+  } catch (error) {
+    console.error(`${error}`.red);
+    return res.status(401).json({ error: "Not authorized" });
   }
 };
 
@@ -104,4 +127,5 @@ module.exports = {
   logout,
   getCurrentUser,
   updateSubscription,
+  updateAvatar,
 };

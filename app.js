@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
@@ -17,7 +18,10 @@ app.use(express.json()); //* Body parser middleware
 
 app.use("/users", authRoutes); // if request path including '/auth' then authRoutes will be connected
 
+app.use("/avatars", express.static(path.join(__dirname, "public", "avatars"))); //* on '/avatars/filename.ext' display chosen avatar
+
 app.use("/api/contacts", authMiddleware.auth, contactsRouter);
+
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });

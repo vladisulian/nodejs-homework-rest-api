@@ -1,5 +1,8 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const Jimp = require("jimp");
+const fs = require("fs");
+const path = require("path");
 require("colors");
 
 async function alreadyRegistered(req, res, next) {
@@ -66,4 +69,46 @@ async function auth(req, res, next) {
   }
 }
 
-module.exports = { auth, alreadyRegistered, isUserExist };
+async function jimpSaving(req, res, next) {
+  const savingPath = path.join(
+    __dirname,
+    "..",
+    "public",
+    "avatars",
+    req.avatar.hashedName
+  );
+
+  await Jimp.read(req.file.path)
+    .then((avatar) => {
+      return avatar.resize(200, 200).write(savingPath, () => {
+        // ? this anon func is needed because it's a callback slot
+        next();
+      });
+    })
+    .catch((err) => console.error(`${err}`.red));
+}
+
+const deleteTmpAvatar = (req, res, next) => {
+  // "file" is going from multer package in routes/auth
+  const file = req.avatar.hashedName;
+
+  const dirPath = path.join(__dirname, "..", "tmp");
+  const filePath = path.join(dirPath, file);
+
+  fs.unlink(filePath, (err, stat) => {
+    if (err) {
+      console.error(`${err}`.red);
+      return;
+    }
+  });
+  console.log(`File ${file} from ${dirPath} is successfully removed.`.yellow);
+  next();
+};
+
+module.exports = {
+  auth,
+  alreadyRegistered,
+  isUserExist,
+  jimpSaving,
+  deleteTmpAvatar,
+};
