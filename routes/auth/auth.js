@@ -18,7 +18,7 @@ const tmpDir = async (req, file, cb) => {
   //* cb - callback. The second argument - returning value
   if (!directoryExist) {
     await mkdir(directory);
-    cb(null, directory);
+    return cb(null, directory);
   }
 
   cb(null, directory);
