@@ -1,6 +1,7 @@
 const User = require("../../models/user");
-
+const sendEmail = require("../../helpers/mailer");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 require("colors");
@@ -18,8 +19,11 @@ const register = (req, res, next) => {
         const user = {
           email,
           password: hash,
+          verificationToken: crypto.randomUUID(),
           avatarURL: gravatar.url(email, { s: "200", r: "pg", d: "mp" }), // avatar generated dynamically with gravatar, where d - default, r - rating
         };
+
+        sendEmail(email, user.verificationToken);
 
         User.create(user);
 
@@ -38,11 +42,28 @@ const register = (req, res, next) => {
   }
 };
 
+const sendAdditionalVerificationMail = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const verificationToken = req.user.verificationToken; // bring from verificationStatusCheckByEmail in auth middleware
+
+    await sendEmail(email, verificationToken);
+
+    res.status(200).json({ message: "Verification email sent" });
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
+};
+
 const login = (req, res, next) => {
   try {
     const password = req.body.password; //* take a password from the request body
     const userPassword = req.user.password; //* take a password from the user, stored on the past middleware
+    const userVerify = req.user.verify; //* take an verify status fro mthe user
 
+    if (userVerify === false) {
+      req.status(400).json({ message: "Not verified." });
+    }
     bcrypt.compare(password, userPassword, async (err, result) => {
       if (err) return next(err);
 
@@ -121,11 +142,29 @@ const updateAvatar = async (req, res, next) => {
   }
 };
 
+const verify = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+    const userID = req.user.id;
+
+    await User.findByIdAndUpdate(userID, {
+      verificationToken: null,
+      verify: true,
+    });
+
+    return res.status(200).json({ message: "Verification successful" });
+  } catch (error) {
+    console.error(`${error}`.red);
+  }
+};
+
 module.exports = {
   register,
+  sendAdditionalVerificationMail,
   login,
   logout,
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  verify,
 };

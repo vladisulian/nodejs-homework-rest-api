@@ -6,13 +6,7 @@ const { mkdir } = require("fs/promises");
 const crypto = require("crypto");
 
 const AuthControllers = require("../../controllers/auth/auth");
-const {
-  alreadyRegistered,
-  isUserExist,
-  auth,
-  jimpSaving,
-  deleteTmpAvatar,
-} = require("../../middleware/auth");
+const AuthMiddlewares = require("../../middleware/auth");
 const { joiUser, joiSubscription } = require("../../models/user-joi");
 
 const multer = require("multer");
@@ -44,23 +38,56 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/register", joiUser, alreadyRegistered, AuthControllers.register);
+router.post(
+  "/register",
+  joiUser,
+  AuthMiddlewares.alreadyRegistered,
+  AuthControllers.register
+);
 
-router.post("/login", joiUser, isUserExist, AuthControllers.login);
+router.post(
+  "/login",
+  joiUser,
+  AuthMiddlewares.isUserExist,
+  AuthControllers.login
+);
 
-router.post("/logout", joiUser, auth, AuthControllers.logout);
+router.post("/logout", joiUser, AuthMiddlewares.auth, AuthControllers.logout);
 
-router.get("/current", joiUser, auth, AuthControllers.getCurrentUser);
+router.get(
+  "/current",
+  joiUser,
+  AuthMiddlewares.auth,
+  AuthControllers.getCurrentUser
+);
 
-router.patch("/", auth, joiSubscription, AuthControllers.updateSubscription);
+router.patch(
+  "/",
+  AuthMiddlewares.auth,
+  joiSubscription,
+  AuthControllers.updateSubscription
+);
 
 router.patch(
   "/avatars",
-  auth,
+  AuthMiddlewares.auth,
   upload.single("avatar"),
-  jimpSaving,
-  deleteTmpAvatar,
+  AuthMiddlewares.jimpSaving,
+  AuthMiddlewares.deleteTmpAvatar,
   AuthControllers.updateAvatar
+);
+
+router.get(
+  "/verify/:verificationToken",
+  AuthMiddlewares.verifyUserExist,
+  AuthControllers.verify
+);
+
+router.post(
+  "/verify",
+  joiUser,
+  AuthMiddlewares.verificationStatusCheckByEmail,
+  AuthControllers.sendAdditionalVerificationMail
 );
 
 module.exports = router;
